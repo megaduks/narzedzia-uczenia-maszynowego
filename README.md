@@ -11,5 +11,5 @@ Przejdź do katalogu `lab-01-dvc`, zbuduj kontener Docker, uruchom go i kontynuu
 ```bash
 cd lab-01-dvc
 docker build -t dvc:latest .
-docker container run dvc:latest /bin/bash
+docker container run -it dvc:latest /bin/bash
 ```
