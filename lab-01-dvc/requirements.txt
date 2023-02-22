@@ -1,0 +1,6 @@
+dvc
+pandas
+pyaml
+scipy
+scikit-learn
+ipython
