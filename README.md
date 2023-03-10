@@ -13,3 +13,13 @@ cd lab-01-dvc
 docker build -t dvc:latest .
 docker container run -it dvc:latest /bin/bash
 ```
+
+### Snorkel
+
+Przejdź do katalogu `lab-02-snorkel`, zbuduj kontener Docker i uruchom go (instrukcja poniżej). Po uruchomieniu kontenera zobaczysz adresy, pod którymi serwer `jupyter` jest dostępny poza kontenerem. Otwórz jeden z adresów, uruchom w przeglądarce plik `snorkel.ipynb` i wykonaj ćwiczenie.
+
+```bash
+cd lab-02-snorkel
+docker build -t snorkel:latest .
+docker container run -it -p 8888:8888 snorkel:latest
+```
