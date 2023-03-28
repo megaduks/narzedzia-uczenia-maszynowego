@@ -34,7 +34,7 @@ docker build -t streamlit:latest .
 docker container run -it -p 8501:8501 streamlit:latest
 ```
 
-Otwórz nowe okno konsoli i sprawdź identyfikator uruchomionego kontenera Docker. Korzystając z tego identyfikatora uruchom konsolę wewnątrz kontenera. Ze względu na ogólną trudność współdzielenia clipboardu między kontenerem i hostem, najprościej jest wykonać ćwiczenie uruchamiając w konsoli edytor `vim` i dzieląc ekran na dwie części (komenda `:split`). Przechodzenie między podzielonymi panelami w `vim` jest realizowane przez sekwencję klawiszy `ctrl-W W`.
+Otwórz nowe okno konsoli i sprawdź identyfikator uruchomionego kontenera Docker. Korzystając z tego identyfikatora uruchom konsolę wewnątrz kontenera. Ze względu na ogólną trudność współdzielenia clipboardu między kontenerem i hostem, najprościej jest wykonać ćwiczenie uruchamiając w konsoli edytor `vim` i dzieląc ekran na dwie części (komenda `:split`). Przechodzenie między podzielonymi panelami w `vim` jest realizowane przez sekwencję klawiszy `ctrl-W ctrl-W`.
 
 ```bash
 docker ps
