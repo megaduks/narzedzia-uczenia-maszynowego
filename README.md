@@ -23,3 +23,21 @@ cd lab-02-snorkel
 docker build -t snorkel:latest .
 docker container run -it -p 8888:8888 snorkel:latest
 ```
+
+### Streamlit
+
+Przejdź do katalogu `lab-03-streamlit`, zbuduj kontener Docker i uruchom go (instrukcja poniżej). Po uruchomieniu kontenera zobaczysz adres, pod którym działa aplikacja Streamlit.
+
+```bash
+cd lab-03-streamlit
+docker build -t streamlit:latest .
+docker container run -it -p 8501:8501 streamlit:latest
+```
+
+Otwórz nowe okno konsoli i sprawdź identyfikator uruchomionego kontenera Docker. Korzystając z tego identyfikatora uruchom konsolę wewnątrz kontenera. Ze względu na ogólną trudność współdzielenia clipboardu między kontenerem i hostem, najprościej jest wykonać ćwiczenie uruchamiając w konsoli edytor `vim` i dzieląc ekran na dwie części (komenda `:split`). Przechodzenie między podzielonymi panelami w `vim` jest realizowane przez sekwencję klawiszy `ctrl-W W`.
+
+```bash
+docker ps
+docker exec -it <container-id>
+vim -o snorkel.md helloworld.py 
+```
