@@ -39,5 +39,5 @@ Otwórz nowe okno konsoli i sprawdź identyfikator uruchomionego kontenera Docke
 ```bash
 docker ps
 docker exec -it <container-id> /bin/bash
-vim -o snorkel.md helloworld.py 
+vim -o streamlit.md helloworld.py 
 ```
