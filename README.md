@@ -41,3 +41,13 @@ docker ps
 docker exec -it <container-id> /bin/bash
 vim -o streamlit.md helloworld.py 
 ```
+
+### Ludwig
+
+Przejdź do katalogu `lab-04-ludwig`, zbuduj kontener Docker i uruchom go (instrukcja poniżej). Po uruchomieniu kontenera wejdź do linii poleceń i wykonaj instrukcje zawarte w pliku `ludwig.md`
+
+```bash
+cd lab-04-ludwig
+docker build -t ludwig:latest .
+docker container run -it -p 8081:8081 ludwig:latest /bin/bash
+```
