@@ -51,3 +51,13 @@ cd lab-04-ludwig
 docker build -t ludwig:latest .
 docker container run -it -p 8081:8081 ludwig:latest /bin/bash
 ```
+
+### Prodigy
+
+Przejdź do katalogu `lab-05-prodigy`, zbuduj kontener Docker i uruchom go (instrukcja poniżej). Po uruchomieniu kontenera wejdź do linii poleceń i wykonaj instrukcje zawarte w pliku `prodigy.md`
+
+```bash
+cd lab-05-prodigy
+docker build -t prodigy:latest .
+docker container run -it -p 8080:8080 prodigy:latest /bin/bash
+```
