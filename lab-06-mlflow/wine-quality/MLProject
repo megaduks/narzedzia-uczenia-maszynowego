@@ -1,0 +1,10 @@
+name: wine_quality_model
+conda_env: conda.yaml
+
+entry_points:
+    main:
+        parameters:
+            input_file: {type: str}
+            alpha: {type: float, default=0.5}
+            l1_ratio: {type: float, default=0.5}
+        command: "python train.py -i {input_file} -a {alpha} -l {l1_ratio}"

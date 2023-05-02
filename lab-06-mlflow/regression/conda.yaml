@@ -1,0 +1,11 @@
+name: linear-regression-example
+channels:
+  - defaults
+  - anaconda
+  - conda-forge
+dependencies:
+  - python=3.6
+  - scikit-learn
+  - pip
+  - pip:
+    - mlflow>=1.0

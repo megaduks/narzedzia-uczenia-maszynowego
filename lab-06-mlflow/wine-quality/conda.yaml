@@ -1,0 +1,10 @@
+name: wine_quality_model
+channels:
+    - defaults
+dependencies:
+    - python=3.6
+    - pip
+    - pip:
+        - scikit-learn
+        - mlflow>=1.26
+        - plac
