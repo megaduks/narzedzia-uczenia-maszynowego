@@ -83,6 +83,7 @@ def main(input_file: Path, alpha: float=0.5, l1_ratio: float=0.5):
 
         mlflow.sklearn.log_model(lr, 'model')
 
+
 if __name__ == "__main__":
     plac.call(main)
 ```
@@ -90,7 +91,7 @@ if __name__ == "__main__":
 Obejrzyj zawartość pliku z danymi
 
 ```bash
-bash$ cat data/winequality.csv
+bash$ cat winequality.csv
 ```
 
 Sprawdź poprawność funkcjonowania skryptu uruchamiając go z linii poleceń
@@ -112,7 +113,7 @@ Uruchom kilka razy trening przekazując różne wartości parametrów
 Uruchom serwer MLflow i obejrzyj informacje zgromadzone o przebiegu eksperymentu pod adresem [localhost:5000](http://localhost:5000)
 
 ```bash
-bash$ mlflow ui
+bash$ mlflow ui -p 5000 -h 0.0.0.0
 ```
 
 Wróć do linii poleceń i uruchom serię eksperymentów, sprawdzając różne kombinacje parametrów. Wcześniej upewnij się, że ustawienia językowe terminala są angielskie (przecinek dziesiętny powoduje błąd)
@@ -224,7 +225,7 @@ Alternatywą dla użycia zmiennej środowiskowej jest przekazanie parametru `--e
 
 ### Pakowanie modelu
 
-W następnym kroku zbudujemy całą paczkę zawierającą kod trenujący prosty model. Utwórz katalog `simple_linear_regression` i stwórz w nim dwa pliki: `MLProject` oraz `conda.yaml`.
+W następnym kroku zbudujemy całą paczkę zawierającą kod trenujący prosty model. Utwórz katalog `regression` i stwórz w nim dwa pliki: `MLProject` oraz `conda.yaml`.
 
 Plik `MLProject` zawiera definicję projektu MLflow. Umieść w nim następującą treść:
 
@@ -241,17 +242,17 @@ entry_points:
 Plik `conda.yaml` zawiera definicję środowiska w którym będzie uruchomiony kod.
 
 ```yaml
-name: sklearn-example
+name: regression-example
 channels:
   - defaults
   - anaconda
   - conda-forge
 dependencies:
-  - python=3.6
+  - python=3.7
   - scikit-learn
   - pip
   - pip:
-    - mlflow>=1.0
+    - mlflow>=1.2333
 ```
 
 Plik `train.py` zawiera kod treningu modelu. W tym przypadku jest to bardzo prosty kod trenujący klasyfikator na zabawkowym przykładzie.
@@ -286,7 +287,7 @@ Uruchom paczkę wydając poniższe polecenie i wcześniej wskazując na lokaliza
 ```bash
 export MLFLOW_CONDA_HOME=/path/to/local/conda
 
-bash$ mlflow run simple_linear_regression
+bash$ mlflow run regression
 ``` 
 
 ### Uruchomienie modelu bezpośrednio z repozytorium
@@ -294,7 +295,7 @@ bash$ mlflow run simple_linear_regression
 W następnym kroku zapiszemy tę paczkę jako repozytorium Git i uruchomimy eksperyment bezpośrednio z repozytorium
 
 - utwórz zdalne repozytorium na GitHubie (np. o nazwie `mlflow_example`
-- wejdź do katalogu `simple_linear_regression` i zainicjalizuj repozytorium komendą `git init`
+- wejdź do katalogu `regression` i zainicjalizuj repozytorium komendą `git init`
 - dodaj zawartość katalogu do repozytorium komendą `git add .`
 - stwórz pierwszy commit komendą `git commit -m "MLflow experiment repo created"`
 - skopiuj URL zdalnego repozytorium
@@ -309,7 +310,7 @@ bash$ git remote -v
 
 ### Pakowanie modelu z parametrami
 
-Jako następny przykład utworzymy eksperyment, który wymaga podania parametrów. Utwórz katalog `wine_project` i stwórz w nim dwa pliki: `MLProject` oraz `conda.yaml`.
+Jako następny przykład utworzymy eksperyment, który wymaga podania parametrów. Utwórz katalog `wine-quality` i stwórz w nim dwa pliki: `MLProject` oraz `conda.yaml`.
 
 W pliku `MLProject` umieść następującą treść:
 
@@ -333,39 +334,38 @@ name: wine_quality_model
 channels:
     - defaults
 dependencies:
-    - python=3.9
+    - python=3.7
     - pip
     - pip:
         - sklearn>=0.23.2
-        - mlflow>=1.8
+        - mlflow>=1.23
 ```
 
-
-
-Przekopiuj do katalogu `wine_project` także pliki `train.py` i plik z danymi (w poniższym przykładzie jego nazwę zmieniono na `data.csv`).
+Przekopiuj do katalogu `wine-quality` także pliki `train.py` i plik z danymi (w poniższym przykładzie jego nazwę zmieniono na `data.csv`).
 
 Ustaw zmienną `MLFLOW_CONDA_HOME` tak aby wskazywała Twoją instalacje Condy. Uruchom utworzenie gotowej paczki z modelem, danymi i zależnościami.
 
 ```bash
-bash$ mlflow run wine_project -P input_file=data.csv \
-        -P alpha=0.12 \
-        -P l1_ratio=0.79
+bash$ mlflow run wine-quality -P input_file=data.csv -P alpha=0.12 -P l1_ratio=0.79
 ```
 
 ### Serwowanie zbudowanego modelu
 
 Utworzony model może zostać z łatwością wdrożony. Obejrzyj jeszcze raz w repozytorium meta-dane przebiegu w którym zalogowano także model. Zwróć uwagę na obecność dwóch plików: spiklowanego modelu oraz pliku tekstowego z meta-danymi. Przeczytaj meta-dane i odnotuj identyfikator przebiegu (`run_id`)
 
-Uruchom serwowanie modelu wydając polecenie
+Uruchom serwowanie modelu, instalując pakiet `pyenv` i wydając polecenie
 
 ```bash
-bash$ mlflow models serve -m /path/to/model/subfoler -p 1234
+bash$ curl https://pyenv.run | bash
+bash$ export PATH=$HOME/.pyenv/bin:$PATH
+
+bash$ mlflow models serve -m /path/to/model/subfoler -p 5000 -h 0.0.0.0
 ```
 
 Korzystając z REST API dokonaj predykcji wydając polecenie
 
 ```bash
-bash$ curl -X POST -H "Content-Type:application/json; format=pandas-split" --data '{"columns":["alcohol", "chlorides", "citric acid", "density", "fixed acidity", "free sulfur dioxide", "pH", "residual sugar", "sulphates", "total sulfur dioxide", "volatile acidity"],"data":[[12.8, 0.029, 0.48, 0.98, 6.2, 29, 3.33, 1.2, 0.39, 75, 0.66]]}' http://127.0.0.1:1234/invocations
+bash$ curl -X POST -H "Content-Type:application/json; format=pandas-split" --data '{"columns":["alcohol", "chlorides", "citric acid", "density", "fixed acidity", "free sulfur dioxide", "pH", "residual sugar", "sulphates", "total sulfur dioxide", "volatile acidity"],"data":[[12.8, 0.029, 0.48, 0.98, 6.2, 29, 3.33, 1.2, 0.39, 75, 0.66]]}' http://localhost:5000/invocations
 ```
 
 ### Zadanie samodzielne

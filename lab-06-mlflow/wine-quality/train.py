@@ -12,29 +12,6 @@ from pathlib import Path
 import mlflow
 import mlflow.sklearn
 
-from mlflow.tracking import MlflowClient
-
-def autolog(run):
-
-    tags = {
-        k: v 
-        for k, v in run.data.tags.items() 
-        if not k.startswith("mlflow.")
-    }
-
-    artifacts = [
-        f.path 
-        for f 
-        in MlflowClient().list_artifacts(run.info.run_id, "model")
-    ]
-
-    print(f"run_id: {run.info.run_id}")
-    print(f"artifacts: {artifacts}")
-    print(f"params: {run.data.params}")
-    print(f"metrics: {run.data.metrics}")
-    print(f"tags: {tags}")
-
-
 @plac.opt('input_file', 'Input file with training data', Path, 'i')
 @plac.opt('alpha', 'Alpha parameter for ElasticNet', float, 'a')
 @plac.opt('l1_ratio', 'L1 ratio parameter for ElasticNet', float, 'l')
@@ -69,15 +46,7 @@ def main(input_file: Path, alpha: float=0.5, l1_ratio: float=0.5):
         mlflow.log_metric('mae', mae)
         mlflow.log_metric('r2score', r2score)
 
-        # mlflow.sklearn.log_model('lr', 'model')
-
-    # mlflow.sklearn.autolog()
-    # lr = ElasticNet(alpha=alpha, l1_ratio=l1_ratio, random_state=42)
-
-    # with mlflow.start_run() as run:
-    #     lr.fit(X_train, y_train)
-
-    # autolog(mlflow.get_run(run_id=run.info.run_id))
+        mlflow.sklearn.log_model(lr, 'model')
 
 if __name__ == "__main__":
     plac.call(main)
