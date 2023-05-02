@@ -64,7 +64,7 @@ docker container run -it -p 8080:8080 prodigy:latest /bin/bash
 
 ### MLFlow
 
-Przejdź do katalogu `lab-65mlflow`, zbuduj kontener Docker i uruchom go (instrukcja poniżej). Po uruchomieniu kontenera wejdź do linii poleceń i wykonaj instrukcje zawarte w plik`mlflow.md`
+Przejdź do katalogu `lab-06-mlflow`, zbuduj kontener Docker i uruchom go (instrukcja poniżej). Po uruchomieniu kontenera wejdź do linii poleceń i wykonaj instrukcje zawarte w pliku `mlflow.md`
 
 ```bash
 cd lab-06-mlflow
