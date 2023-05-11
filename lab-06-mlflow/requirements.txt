@@ -1,0 +1,7 @@
+mlflow
+plac
+pandas
+numpy
+pathlib
+scikit-learn
+virtualenv
