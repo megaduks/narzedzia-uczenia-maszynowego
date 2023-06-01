@@ -71,3 +71,13 @@ cd lab-06-mlflow
 docker build -t mlflow:latest .
 docker container run -it -p 5000:5000 mlflow:latest /bin/bash
 ```
+
+### nlpaug & checklist
+
+Przejdź do katalogu `lab-07-nlpaug`, zbuduj kontener Docker i uruchom go (instrukcja poniżej). Po uruchomieniu kontenera wejdź do uruchomionego notatnika i wykonaj ćwiczenie.
+
+```bash
+cd lab-07-mlflow
+docker build -t nlpaug:latest .
+docker container run -it -p 8888:8888 nlpaug:latest
+```
