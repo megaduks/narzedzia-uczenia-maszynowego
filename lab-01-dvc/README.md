@@ -1,14 +1,14 @@
 # Data Versioning Control (DVC)
 
-## Wprowadzenie
+## Introduction
 
-Celem laboratorium jest zapoznanie studentów z podstawami wykorzystania narzędzia `dvc` do wersjonowania danych i modeli w projektach wykorzystujących uczenie maszynowe. 
+The aim of this laboratory is to familiarize the students with the basics of `dvc`, a tool for versioning data and models in projects using machine learning.
 
-Najprostszym sposobem jest zainstalowanie biblioteki wewnątrz środowiska wirtualnego lub korzystając z condy, choć możliwe jest też zainstalowanie bezpośrednio z repozytorium lub pakietu. Szczegóły dotyczące instalacji można znaleźć na [stronie porjektu](https://dvc.org/doc/install/linux)
+The easiest way to install the library  is inside a virtual environment or using conda, although it is also possible to install directly from the official repository or package. Installation details can be found on the [project website](https://dvc.org/doc/install/linux).
 
-Wewnątrz uruchomionego kontenera znajdujesz się w katalogu `home`. To będzie domyślny katalog do realizacji ćwiczenia. 
+Inside the running container, you are in the `home` directory. This will be the default directory for the exercise.
 
-Pierwszym krokiem jest zainicjalizowanie w katalogu projektu środowiska `git` a następnie zainicjalizowanie środowiska `dvc`. Ponieważ znajdujesz się wewnątrz kontenera, konieczne jest ustawienie globalnej nazwy użytkownika dla `git`.
+The first step is to initialize a `git` repository in the project directory and then initialize a `dvc` repository. Since you are inside a container, it is necessary to set a global username for `git`.
 
 
 ```bash
@@ -19,7 +19,8 @@ git init
 dvc init
 git status
 ```
-Zapoznaj się z utworzonymi przez `dvc` plikami i zapisz aktualny stan repozytorium w początkowym commicie.
+
+Review the files created by `dvc` and save the current state of the repository in the initial commit.
 
 ```bash
 git add .dvc/config
@@ -29,26 +30,25 @@ git add .dvcignore
 git commit -m "feat: initialize dvc repo"
 ```
 
-## Wersjonowanie danych
+## Data versioning
 
-Głównym celem `dvc` jest umożliwienie wersjonowania dużych plików z danymi, których wykorzystanie wewnątrz `git` [jest problematyczne](https://docs.github.com/en/github/managing-large-files/working-with-large-files). W poniższym przykładzie wykorzystamy `dvc` do tego, żeby mieć możliwość pracowania z różnymi wersjami tego samego pliku.
+The main purpose of `dvc` is to enable versioning of large data files that are problematic to use inside `git`(https://docs.github.com/en/github/managing-large-files/working-with-large-files). In the example below, we will use `dvc` to be able to work with different versions of the same file.
 
-Przed rozpoczęciem pracy zapoznaj się z plikami `data/adult.names` i `data/adult.data`. Dodaj oba pliki do repozytorium, aby `dvc` zaczęło śledzić zmiany w tych plikach. 
+Before you start, review the files `data/adult.names` and `data/adult.data`. Add both files to the repository so that `dvc` starts tracking changes of these files.
 
 ```bash
 dvc add data/adult.data
 dvc add data/adult.names
 ```
 
-Obejrzyjmy pliki, które powstały w wyniku dodania plików danych do repozytorium
-
+Let's look at the additional files that are created by `dvc` when adding data files to the repository:
 
 ```bash
 cat data/adult.data.dvc
 cat data/adult.names.dvc
 ```
 
-W celu umożliwienia śledzenia zmian w plikach danych konieczne jest dodanie utworzonych właśnie plików `*.dvc` oraz plku `data/.gitignore` do repozytorium `git`.
+In order to be able to track changes in the data files, it is necessary to add the `*.dvc` files and `data/.gitignore` to the `git` repository.
 
 
 ```bash
@@ -56,15 +56,15 @@ git add data/.gitignore data/adult.data.dvc data/adult.names.dvc
 git commit -m "feat: add ADULT dataset to dvc"
 ```
 
-Kolejnym krokiem będzie utworzenie zewnętrznego repozytorium danych. DVC obsługuje wiele usług składawania danych, takich jak Amazon S3, Google Cloud Storage, zewnętrzne dyski dostępne przez `ssh`, systemy HDFS, i wiele innych. My posłużymy się alternatywnym lokalnym katalogiem do symulowania zewnętrznego repo, a następnie wypchniemy do niego zmiany.
-
+The next step will be to create an external data repository. DVC supports many storage services such as Amazon S3, Google Cloud Storage, external drives accessed via `ssh`, HDFS systems, and many others. We will use an alternative local directory to simulate an external repo and then push the changes to it.
 
 ```bash
 mkdir -p ~/dvcrepo
 dvc remote add -d repozytorium ~/dvcrepo
 git commit .dvc/config -m "feat: add local dir as remote dvc repo"
 ```
-Wypchnij lokalne pliki danych do "zdalnego" repozytorium.
+
+Push your local data files to a "remote" repository.
 
 ```bash
 dvc push
@@ -72,8 +72,7 @@ tree ~/dvcrepo/
 cat ~/dvcrepo/1a/7cdb3ff7a1b709968b1c7a11def63e
 ```
 
-Zewnętrzne repozytorium może być wykorzystane do ściągnięcia danych w przypadku dokonania niechcianych zmian, odtworzenia gałęzi eksperymentu, itd.
-
+An external repository can be used to pull data in case of unwanted changes, re-creating an experiment branch, etc.
 
 ```bash
 rm -rf .dvc/cache/
@@ -82,7 +81,8 @@ rm data/adult.names
 
 tree data/
 ```
-Jak widać, przez przypadek usunęliśmy pliki z danymi. Dzięki `dvc` łatwo odtworzymy stan repozytorium.
+
+As you can see, we "accidentally" deleted the data files. Thanks to `dvc` we can easily restore the state of the repository.
 
 ```bash
 dvc pull
@@ -90,7 +90,7 @@ dvc pull
 tree data/
 ```
 
-W kolejnym kroku dokonamy zmian w pliku danych, usuwając wszystkie linie dotyczące pracowników federalnych. Sprawdźmy, ile jest takich rekordów, a następnie je usuniemy.
+In the next step, we will make changes to the data file in order to remove all lines related to federal employees. Let's check how many such records there are and then delete them.
 
 
 ```bash
@@ -102,7 +102,8 @@ grep 'Federal-gov' data/adult.data | wc -l
 sed -i "/Federal-gov/d" data/adult.data
 cat data/adult.data | wc -l
 ```
-Zmianę wprowadzoną do pliku danych należy zarejestrować w `dvc`.
+
+The changes made to the data file must be added in `dvc`.
 
 ```bash
 dvc add data/adult.data
@@ -111,7 +112,7 @@ git commit data/adult.data.dvc -m "feat: remove federal workers"
 dvc push
 ```
 
-Jeśli chcemy cofnąć tę zmianę, to konieczne jest cofnięcie się do właściwej wersji pliku `adult.data.dvc` i wykonanie komendy `dvc checkout` w celu zsynchronizowania danych.
+If we want to undo this change, it is necessary to roll back to the correct version of the `adult.data.dvc` file using `git` and execute the `dvc checkout` command to synchronize the data.
 
 
 ```bash
@@ -132,52 +133,46 @@ grep 'Federal-gov' data/adult.data
 git commit data/adult.data.dvc -m "feat: revert deletion of federal workers"
 ```
 
-## Dostęp do zewnętrznych repozytoriów danych
+## Access to external data repositories
 
-Mając skonfigurowane repozytorium `git` korzystające z `dvc` możemy z łatwością wykorzystać `dvc` to szybkiego pobierania danych i modeli, współdzielenia danych z innymi, itp. Wynik poprzedniego rozdziału umieściłem w repozytorium https://github.com/megaduks/dvc-tutorial i teraz zobaczymy, w jaki sposób można wyświetlić listę wersjonowanych danych i z nimi pracować.
+Once we configured a `dvc` environment jointly with  `git`, we can easily use `dvc` to quickly download data and models, share data with others, etc. The result of the previous part has been placed in the repository https://github.com/megaduks/dvc-tutorial and now we will see how to display a list of versioned data and work with it.
+
 
 
 ```bash
 dvc list https://github.com/megaduks/dvc-tutorial data
 ```
 
-Te zbiory danych możemy ściągnąć jednym poleceniem, np. do nowego projektu
-
+We can download these data sets with one command, e.g. to a new project
 
 ```bash
-mkdir nowy_projekt
-cd nowy_projekt
+mkdir new_project
+cd new_project
 dvc get https://github.com/megaduks/dvc-tutorial data
 tree .
 ```
 
-Niestety, w ten sposób straciliśmy informację o źródle plików danych, nie mamy możliwości ich ponownego powiązania. Komenda `dvc get` jest w pewnym sensie odpowiednikiem `wget`. Jeśli chcemy zachować połączenie między danymi i ich źródłem, konieczne jest wykonanie komendy `dvc import`.
+Unfortunately, doing it this way, we lose the information and history about the source, we have no way to re-link them. The `dvc get` command is somewhat equivalent to `wget`. To maintain the relation between the data and its source, it is necessary to execute the `dvc import` command.
 
 
 ```bash
-mkdir -p nowszy_projekt/data
+mkdir -p new_project/data
 dvc import https://github.com/megaduks/dvc-tutorial/ data/adult.data \
-    -o nowszy_projekt/data/adult.data
+    -o new_project/data/adult.data
 ```
 
 
 ```bash
-%%bash
-
-cat nowszy_projekt/data/adult.data.dvc
+cat new_project/data/adult.data.dvc
 ```
 
-Jak widać, metadane związane z plikiem `adult.data` zawierają teraz informację o tym, z jakiego zewnętrznego repozytorium plik pochodzi wraz ze szczegółowymi hashami informującymi o wersji pliku danych. Dodatkowo, możemy bardzo łatwo śledzić zmiany pliku z danymi w zewnętrznym repozytorium.
-
+As you can see, the metadata associated with the file `adult.data` now includes the information about which external repository the file comes from, along with the hashes that provide information about the version of the data file. Additionally, we can very easily track changes of the data file from the external repository.
 
 ```bash
-%%bash
-
-dvc update nowszy_projekt/data/adult.data.dvc
+dvc update new_project/data/adult.data.dvc
 ```
 
-Interesującą możliwością jest też dostęp programistyczny do plików umieszczonych w zewnętrznych repozytoriach.
-
+Another interesting possibility is to programmatically access to files located in external repositories.
 
 ```python
 import dvc.api
@@ -187,27 +182,25 @@ with dvc.api.open('data/adult.data', repo='https://github.com/megaduks/dvc-tutor
         print(f.readline())
 ```
 
-## Potoki danych
+## Data pipelines
 
-Najciekawszą możliwością oferowaną przez `dvc` jest możliwość zarządzania reprodukowalnymi potokami przetwarzania. Zilustrujemy to na przykładzie, w ramach którego wykonamy następujące czynności:
+The most interesting feature offered by `dvc` is the ability to manage reproducible processing pipelines. We will illustrate this with an example in which we will do the following:
 
-- przygotujemy dane poprzez usunięcie części rekordów
-- dodanmy nowy atrybut 
-- wytrenujemy model
-- zbadamy dokładność modelu
+- we will prepare the data by splitting the records into training and test data
+- we will add a new attribute
+- we will train the model
+- we will test the accuracy of the model
 
-Oczywiście poszczególne etapy będą maksymalnie proste, bo naszym celem jest zbudowanie potoku przetwarzania danych. 
+We will create the first step of the pipeline in which we will load a text file and replace it with a spliced version. Create a file `params.yaml` and place the following content in it:
 
-Utworzymy pierwszy krok potoku w ramach którego wczytamy plik tekstowy i zamienimy na wersję spiklowaną. Utwórz plik `params.yaml` i umieść w nim następującą zawartość
 
-```
+```yaml
 prepare:
   split: 0.75
   seed: 42
 ```
 
-Następnie przygotuj plik `prepare.py` i wypełnij go poniższą treścią:
-
+Then create the file `prepare.py` and add the following content
 
 ```python
 import pandas as pd
@@ -237,39 +230,38 @@ train_df.to_csv(train_output, header=None)
 test_df.to_csv(test_output, header=None)
 ```
 
-Teraz możemy utworzyć pierwszy przepływ w którym:
+Now we can create the first stage of our pipeline as follow:
 
-- utworzymy nazwany krok (`-n prepare`)
-- przekażemy parametry (`-p prepare.seed,prepare.split`)
-- przekażemy zależności (`-d src/prepare.py -d data/adult.data`)
-- wskażemy wyjście z kroku (`-o data/prepared/`)
-- uruchomimy skrypt i przekażemy dane wejściowe
-
+- we will create a stage with a name (`-n prepare`)
+- we will pass some parameters (`-p prepare.seed,prepare.split`)
+- we will pass some dependencies (`-d src/prepare.py -d data/adult.data`)
+- we will indicate the stage output(`-o data/prepared/`)
+- we will run the script using `dvc repro`
 
 ```bash
-dvc run -n prepare \
+dvc stage add -n prepare \
     -p prepare.seed,prepare.split \
     -d src/prepare.py -d data/adult.data \
     -o data/prepared \
     python src/prepare.py data/adult.data
+dvc repro
 ```
 
-W wyniku tego kroku pojawiły się pliki wynikowe oraz specjalny plik `dvc.yaml` pokazujący w sposób przyjazny dla użytkownika konfigurację całego przepływu.
-
+As a result, the output files have been created and `dvc` created a special file `dvc.yaml` which shows the configuration of the entire pipeline in a user-friendly way.
 
 ```bash
 cat dvc.yaml
 tree data/prepared/
 ```
 
-Dobrym pomysłem po utworzeniu pierwszego kroku przetwarzania będzie zapisanie go w `git`.
+Once you've created your first processing step, it's a good idea to save it using `git`.
 
 ```bash
 git add dvc.yaml dvc.lock data/.gitignore params.yaml
 git commit -m "feat: create preparation step" 
 ```
 
-Kolejnym krokiem jest dodanie do przepływu zadania polegającego na przetransformowaniu danych. Dokonamy rekodowania wszystkich atrybutów kategorycznych przy użyciu [klasy LabelEncoder](https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.LabelEncoder.html#sklearn.preprocessing.LabelEncoder) oraz wyznaczymy interakcje między atrybutami korzystając z [klasy PolynomialFeatures](https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.PolynomialFeatures.html#sklearn.preprocessing.PolynomialFeatures). Ta ostatnia klasa wykorzysta parametr `degree`. Zaktualizuj plik parametrów żeby wyglądał następująco:
+The next step is to add a data transformation stage to the pipeline. We will encode all categorical attributes using [`LabelEncoder` class](https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.LabelEncoder.html#sklearn.preprocessing.LabelEncoder) and determine the interactions between the attributes using [the class `PolynomialFeatures`](https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.PolynomialFeatures.html#sklearn.preprocessing.PolynomialFeatures). We will add the `degree` parameter of the `PolynomialFeatures` class as parameter to the stage. Update the parameter file to look like this:
 
 ```
 prepare:
@@ -279,8 +271,7 @@ featurize:
   degree: 2
 ```
 
-Następnie utwórz plik `featurize.py` i wypełnij go poniższą treścią.
-
+Then create a `featurize.py` file and add the following content.
 
 ```python
 import pandas as pd
@@ -349,18 +340,17 @@ with open(test_output, 'wb') as f:
 
 ```
 
-Możemy zatem dokonać inżynierii cech uruchamiając polecenie
-
+We can add the  feature engineering stage by running a command
 
 ```bash
-dvc run -n featurize \
+dvc stage add -n featurize \
     -p featurize.degree \
     -d src/featurize.py -d data/prepared/ \
     -o data/features \
     python src/featurize.py data/prepared/ data/features/
 ```
 
-Aby nie utracić efektów pracy powinniśmy dotychczasowe kroki potoku zapisać w repozytorium `git`.
+In order not to lose the results of our work, we should save the current steps of the pipeline using `git`.
 
 
 ```bash
@@ -368,7 +358,7 @@ git add data/.gitignore dvc.lock dvc.yaml params.yaml
 git commit -m 'feat: create featurization step'
 ```
 
-Następnym krokiem jest uruchomienie treningu. Posłużymy się tu prostym skryptem który trenuje las losowy, korzystając z dwóch parametrów: maksymalnej głębokości drzewa i liczby drzew wchodzących w skład lasu losowego. Zmodyfikuj plik parametrów aby wyglądał następująco:
+The next step is to train a model. We will use a simple script that trains a random forest using two parameters: the maximum tree depth and the number of trees included in the random forest. Modify the parameter file to look like this:
 
 ```
 prepare:
@@ -381,7 +371,7 @@ train:
   n_estimators: 5
 ```
 
-Utwórz plik `train.py` i umieść w nim poniższy kod:
+Create a `train.py` file and place the following code in it:
 
 
 ```python
@@ -421,39 +411,37 @@ with open(model_file, 'wb') as f:
 
 ```
 
-Jak widać, skrypt oczekuje dwóch parametrów podanych z linii poleceń (katalog z danymi wejściowymi i katalog w którym należy umieścić wyniki skryptu). Dodanie kroku do przepływu wymaga wykonania następującego polecenia:
-
+As you can see, the script expects two parameters provided from the command line (the directory with the input data and the directory in which the script results should be placed). As usually, add the step to the pipeline usingthe following command:
 
 ```bash
-dvc run -n train \
+dvc stage add -n train \
     -p train.max_depth,train.n_estimators \
     -d src/train.py -d data/features/ \
     -o data/models/ \
     python src/train.py data/features/ data/models/
 ```
 
-Tradycyjnie już zapisujemy zmiany w przepływie w repozytorium `git`
-
+Again, we save changes to the pipepline in the `git` repository:
 
 ```bash
 git add data/.gitignore dvc.lock dvc.yaml params.yaml
 git commit -m 'feat: create training step'
 ```
 
-Po co w ogóle tworzyliśmy plik `dvc.yaml`? Na pierwszy rzut oka wydaje się to wszystko nadmiernie skomplikowane. Ale tu właśnie ujawnia się główna zaleta `dvc`, umożliwia pełną reprodukowalność całych przepływów za pomocą jednego polecenia.
-
+At this stage (no pun intended), you might wonder why we create the `dvc.yaml` file at all? At first, it all seems overly complicated. But this is where the main advantage of `dvc` comes into play: it allows full reproducibility of entire pipelines with a single command.
 
 ```bash
 dvc repro
 ```
 
-Zmień jakiś parametr w sekcji `train` (np. zwiększ liczbę drzew składowych) i ponownie uruchom cały przepływ. Które etapy zostały uruchomione? Zmień parametr w sekcji `prepare` (np. sposób podziału na zbiór uczący i testujący) i znów uruchom przepływ. Co stało się tym razem?
+Change some of the parameters in the `train` section (e.g. increase the number of component trees) and run the entire pipeline again. Which stages have been started? Change the parameter in the `prepare` section (e.g. the method of splitting into training and testing sets) and run the pipeline again. What happened this time?
 
-Aktualny przepływ możesz też zwizualizaować przy pomocy polecenia `dvc dag`.
+You can also visualize the current pipeline using the `dvc dag` command..
 
-## Eksperymenty
+## Experiments
 
-Ostatnim elementem `dvc` jaki zobaczymy będzie uruchomienie eksperymentów. Zanim jednak przejdziemy do eksperymentów, przygotujemy w pliku `evaluate.py` kod do oceny jakości nauczonego modelu. Utwórz taki plik i umieść w nim poniższy kod.
+The last element of `dvc` that we will see are the experiments. However, before we move on to experiments, we will prepare a new stageto assess the quality of the trained models. Create a file `evaluate.py` and place the following code in it.
+
 
 
 ```python
@@ -499,49 +487,44 @@ with open(plots_file, 'w') as f:
     ]}, f)
 ```
 
-Tym razem dodanie kroku ewaluacji do potoku będzie bardziej skomplikowane, ponieważ musimy też uwzględnić specjalny plik do przechowywania wartości metryk oraz plik przechowywania danych na potrzeby wykresów. 
-
+This time, adding an evaluation stage to the pipeline will be more complicated because we also need to include a special file to store the metric values and a data storage file for the plots.
 
 ```bash
-dvc run -n evaluate \
+dvc stage add -n evaluate \
     -d src/evaluate.py -d data/models/ -d data/features/ \
     -M scores.json \
     --plots-no-cache prc.json \
     python src/evaluate.py data/models/ data/features/ scores.json prc.json
 ```
 
-Spójrzmy, jak wygląda ostatecznie plik opisujący cały przepływ.
+Let's look at what the final file describing the entire pipeline looks like.
 
 
 ```bash
 cat dvc.yaml
 ```
 
-Nie zapominamy o zapisaniu aktualnego stanu przepływu w repozytorium `git`.
-
+Do not forget to save the current state of the pipeline in the `git` repository.
 
 ```bash
 git add dvc.lock dvc.yaml 
 git commit -m 'feat: create evaluation step'
 ```
 
-W wyniku wykonania przepływu powstał plik `scores.json` zawierający jedyną aktualnie wykorzystywaną miarę AUROC.
-
+As a result of executing the pipeline, a `scores.json` file was created containing the only metric that we have configured aka the AUROC.
 
 ```bash
 cat scores.json
 ```
 
-W pliku `prc.json` z kolei zapisane są informacje o procesie uczenia (*precision-recall curve*). Zapiszmy oba te pliki do repozytorium.
-
+The `prc.json` file contains information about the *precision-recall curve*. Let's save both of these files to the repository.
 
 ```bash
 git add scores.json prc.json
 git commit -m 'feat: add evaluation metrics'
 ```
 
-Spróbujmy uruchomić eksperyment przy zmienionych parametrach i sprawdźmy, jak to wpłynie na naszą miarę. Zmień parametr `degree` na wartość 3 oraz zwiększ liczbę `n_estimators` do 25. Następnie uruchom przepływ.
-
+Let's try running the experiment with different input parameters and see how it affects our evaluation metric. Change the `degree` parameter to 3 and increase the number of `n_estimators` to 25. Then run the pipeline again.
 
 ```bash
 dvc repro
@@ -551,7 +534,7 @@ dvc metrics diff
 dvc plots diff -x recall -y precision
 ```
 
-Plik z wykresem został utworzony wewnątrz kontenera. Jeśli chcesz go obejrzeć, najprościej jest przekopiować ten plik na hosta.
+The plot file was created inside the container. If you want to view it, the easiest way is to copy the file to your host system.
 
 ```bash
 docker ps
