@@ -162,8 +162,6 @@ dvc import https://github.com/megaduks/dvc-tutorial/ data/adult.data \
 
 
 ```bash
-%%bash
-
 cat nowszy_projekt/data/adult.data.dvc
 ```
 
@@ -171,8 +169,6 @@ Jak widać, metadane związane z plikiem `adult.data` zawierają teraz informacj
 
 
 ```bash
-%%bash
-
 dvc update nowszy_projekt/data/adult.data.dvc
 ```
 
@@ -247,11 +243,12 @@ Teraz możemy utworzyć pierwszy przepływ w którym:
 
 
 ```bash
-dvc run -n prepare \
+dvc stage -n prepare \
     -p prepare.seed,prepare.split \
     -d src/prepare.py -d data/adult.data \
     -o data/prepared \
     python src/prepare.py data/adult.data
+dvc repro
 ```
 
 W wyniku tego kroku pojawiły się pliki wynikowe oraz specjalny plik `dvc.yaml` pokazujący w sposób przyjazny dla użytkownika konfigurację całego przepływu.
@@ -353,7 +350,7 @@ Możemy zatem dokonać inżynierii cech uruchamiając polecenie
 
 
 ```bash
-dvc run -n featurize \
+dvc stage add -n featurize \
     -p featurize.degree \
     -d src/featurize.py -d data/prepared/ \
     -o data/features \
@@ -425,7 +422,7 @@ Jak widać, skrypt oczekuje dwóch parametrów podanych z linii poleceń (katalo
 
 
 ```bash
-dvc run -n train \
+dvc stage add -n train \
     -p train.max_depth,train.n_estimators \
     -d src/train.py -d data/features/ \
     -o data/models/ \
@@ -503,7 +500,7 @@ Tym razem dodanie kroku ewaluacji do potoku będzie bardziej skomplikowane, poni
 
 
 ```bash
-dvc run -n evaluate \
+dvc stage add -n evaluate \
     -d src/evaluate.py -d data/models/ -d data/features/ \
     -M scores.json \
     --plots-no-cache prc.json \
