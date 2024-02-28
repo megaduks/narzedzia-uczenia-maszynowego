@@ -243,7 +243,7 @@ Teraz możemy utworzyć pierwszy przepływ w którym:
 
 
 ```bash
-dvc stage -n prepare \
+dvc stage add -n prepare \
     -p prepare.seed,prepare.split \
     -d src/prepare.py -d data/adult.data \
     -o data/prepared \
