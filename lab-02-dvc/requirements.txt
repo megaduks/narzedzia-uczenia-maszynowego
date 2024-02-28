@@ -1,7 +1,0 @@
-snorkel
-spacy
-pandas
-numpy
-jupyter
-wordfreq
-nltk
