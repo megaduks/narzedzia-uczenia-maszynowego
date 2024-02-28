@@ -248,6 +248,7 @@ dvc stage add -n prepare \
     -d src/prepare.py -d data/adult.data \
     -o data/prepared \
     python src/prepare.py data/adult.data
+
 dvc repro
 ```
 
@@ -355,6 +356,8 @@ dvc stage add -n featurize \
     -d src/featurize.py -d data/prepared/ \
     -o data/features \
     python src/featurize.py data/prepared/ data/features/
+
+dvc repro
 ```
 
 Aby nie utracić efektów pracy powinniśmy dotychczasowe kroki potoku zapisać w repozytorium `git`.
@@ -427,6 +430,8 @@ dvc stage add -n train \
     -d src/train.py -d data/features/ \
     -o data/models/ \
     python src/train.py data/features/ data/models/
+
+dvc repro
 ```
 
 Tradycyjnie już zapisujemy zmiany w przepływie w repozytorium `git`
@@ -505,6 +510,8 @@ dvc stage add -n evaluate \
     -M scores.json \
     --plots-no-cache prc.json \
     python src/evaluate.py data/models/ data/features/ scores.json prc.json
+
+dvc repro
 ```
 
 Spójrzmy, jak wygląda ostatecznie plik opisujący cały przepływ.
