@@ -1,4 +1,4 @@
-FROM python
+FROM python:3.11.6-slim
 
 RUN apt update && apt install vim tree git python3-dev gcc libc-dev libffi-dev -y
 
