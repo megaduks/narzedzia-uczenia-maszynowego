@@ -2,6 +2,8 @@
 
 Repozytorium zawiera materiały dydaktyczne na potrzeby przedmiotu "Narzędzia uczenia maszynowego" realizowanego na specjalności "sztuczna inteligencja" na II stopniu studiów na kierunku Informatyka na Politechnice Poznańskiej
 
+Do realizacji ćwiczeń służy maszyna wirtualna `Ubuntu-22.04-NUM` umieszczona w środowisku VLab. Po uruchomieniu maszyny wirtualnej proszę się zalogować na konto `student` i utworzyć obraz kontenera zgodnie z poleceniami dla danego ćwiczenia.
+
 ---
 
 ### DVC
@@ -10,8 +12,8 @@ Przejdź do katalogu `lab-01-dvc`, zbuduj kontener Docker, uruchom go i kontynuu
 
 ```bash
 cd lab-01-dvc
-docker build -t dvc:latest .
-docker container run -it dvc:latest /bin/bash
+sudo docker build -t dvc:latest .
+sudo docker container run -it dvc:latest /bin/bash
 ```
 
 ### Snorkel
