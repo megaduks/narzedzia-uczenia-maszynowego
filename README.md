@@ -22,8 +22,8 @@ Przejdź do katalogu `lab-02-snorkel`, zbuduj kontener Docker i uruchom go (inst
 
 ```bash
 cd lab-02-snorkel
-docker build -t snorkel:latest .
-docker container run -it -p 8888:8888 snorkel:latest
+sudo docker build -t snorkel:latest .
+sudo docker container run -it -p 8888:8888 snorkel:latest
 ```
 
 ### Streamlit
