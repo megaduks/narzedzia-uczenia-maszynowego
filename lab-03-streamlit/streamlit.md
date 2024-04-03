@@ -16,10 +16,10 @@ Utwórz osobny katalog i umieść w nim plik `helloworld.py`. W pliku umieść n
 ```python
 import streamlit as st
 
-st.title('Hello world app')
-st.header('This is my first Streamlit app')
+st.title("Hello world app")
+st.header("This is my first Streamlit app")
 
-st.write('Hello, world!')
+st.write("Hello, world!")
 ```
 
 W linii poleceń przejdź do katalogu z plikiem i uruchom serwer przy pomocy polecenia
@@ -34,7 +34,7 @@ Wywołanie funkcji `st.write()` jest nadmiarowe, Streamlit domyślnie wysyła do
 
 
 ```python
-_str = 'Hello, universe!'
+_str = "Hello, universe!"
 _str
 ```
 
@@ -42,15 +42,16 @@ Jeżeli chcesz w prosty i szybki sposób dodać formatowaną zawartość, najła
 
 
 ```python
-st.markdown('> Streamlit is awsome!')
-st.markdown('*Mikołaj Morzy*')
+st.markdown("> Streamlit is awsome!")
+st.markdown("*Mikołaj Morzy*")
+st.markdown("[Don't click on me](https://theuselessweb.com/)")
 ```
 
 Analogicznie można dołączyć do dokumentu fragment w Latexu
 
 
 ```python
-st.latex('\LaTeX: e^{i\pi}+1=0')
+st.latex("\LaTeX: e^{i\pi}+1=0")
 ```
 
 Biblioteka Streamlit jest w sposób szczególny przystosowana do pracy z danymi przechowywanymi w obiektach biblioteki `pandas`. Zaimportuj tę bibliotekę, wczytaj plik danych i wyświetl jego zawartość w aplikacji.
@@ -94,7 +95,7 @@ Jeśli chcesz włączyć wyświetlanie fragmentu aplikacji warunkowo, możesz to
 
 
 ```python
-if st.checkbox('Show age distribution?'):
+if st.checkbox("Show age distribution?"):
     age_distribution = df.Age.dropna().value_counts()
 
     st.chart(age_distribution)
@@ -104,7 +105,7 @@ Inną możliwością modyfikowania sposobu wyświetlania danych jest posłużeni
 
 
 ```python
-display_sex = st.selectbox('Select sex to display', df.Sex)
+display_sex = st.selectbox("Select sex to display", df.Sex)
 
 st.dataframe(df[df.Sex == display_sex])
 ```
@@ -117,21 +118,21 @@ Umieść w pliku poniższy kod i zaobserwuj jego działanie.
 
 
 ```python
-left_column, right_column = st.beta_columns(2)
+left_column, right_column = st.columns(2)
 
-button_clicked = left_column.button('Click me!')
+button_clicked = left_column.button("Click me!")
 
 if button_clicked:
     right_column.write("Thank you!")
 ```
 
-Szczególnie długie opisy mogą być umieszczone w komponencie `st.beta_expander`:
+Szczególnie długie opisy mogą być umieszczone w komponencie `st.expander`:
 
 
 ```python
 import lorem
 
-expander = st.beta_expander("Lorem ipsum")
+expander = st.expander("Lorem ipsum")
 expander.write(lorem.paragraph())
 ```
 
@@ -141,17 +142,17 @@ Jeśli skrypt zawiera w sobie jakąś długą operację, jej postępo może być
 ```python
 import time
 
-'Here we begin a long computation'
+"Here we begin a long computation"
 
 current_iteration = st.empty()
 progress_bar = st.progress(0)
 
 for i, _ in enumerate(range(100)):
-    current_iteration.text(f'Iteration {i+1}')
+    current_iteration.text(f"Iteration {i+1}")
     progress_bar.progress(i+1)
     time.sleep(0.1)
     
-'Finally, computation is completed.'
+"Finally, computation is completed."
 ```
 
 # Komponenty zaawansowane
@@ -167,7 +168,7 @@ import random
 
 from datetime import datetime, timedelta
 
-st.title('Uber pickups in Poznan')
+st.title("Uber pickups in Poznan")
 
 def generate_data(n_rows: int = 100) -> pd.DataFrame:
     end = datetime.now()
@@ -182,9 +183,9 @@ def generate_data(n_rows: int = 100) -> pd.DataFrame:
     lon = np.random.uniform(16.85, 17.00, n_rows)
     
     return pd.DataFrame({
-        'date': dates,
-        'lat': lat,
-        'lon': lon
+        "date": dates,
+        "lat": lat,
+        "lon": lon
     })
 
 data = generate_data(n_rows=500)
@@ -197,15 +198,14 @@ Funkcja `generate_data()` jest przykładem funkcji, której wyniki mogłyby być
 - zmień liczbę generowanych punktów na: 200, 1000, 10000 i zaobserwuj czas potrzebny na załadowanie strony
 - udekoruj funkcję dekoratorem `@st.cache` i porównaj czas ładowania strony
 
-W tej chwili liczba generowanych punktów danych jest ustawiona "na sztywno" na 500. Dodajmy pole tekstowe umożliwiające użytkownikowi podanie tej liczby samodzielnie. Zmodyfikuj powyższy kod tak, żeby możliwe było przekazanie do skryptu pożądanej liczby punktów. Wykorzystaj w tym celu komponent [number_input](https://docs.streamlit.io/en/stable/api.html#streamlit.number_input)
-
+W tej chwili liczba generowanych punktów danych jest ustawiona "na sztywno" na 500. Dodajmy pole tekstowe umożliwiające użytkownikowi podanie tej liczby samodzielnie. Zmodyfikuj powyższy kod tak, żeby możliwe było przekazanie do skryptu pożądanej liczby punktów. Wykorzystaj w tym celu komponent [number_input](https://docs.streamlit.io/library/api-reference/widgets/st.number_input)
 
 ```python
 def generate_data(...):
     ...
     
 n_rows = st.number_input(
-    label='How many points to generate?',
+    label="How many points to generate?",
     min_value=1,
     max_value=100000,
     value=1000
@@ -219,7 +219,7 @@ Dodajmy jeszcze opcję wyświetlenia obok mapy surowych danych
 
 ```python
 if st.checkbox("Show raw data?"):
-    st.subheader('Raw data')
+    st.subheader("Raw data")
     st.dataframe(data)
 ```
 
@@ -236,61 +236,61 @@ Wygodnym sposobem wygenerowania filtru dla danych numerycznych jest komponent `s
 
 
 ```python
-hour_filter = st.slider('hour', 0, 23, 17)
+hour_filter = st.slider("hour", 0, 23, 17)
 
 df_filtered = data[data.date.dt.hour == hour_filter]
 
-st.subheader(f'Map of all uber pickups at {hour_filter}:00')
+st.subheader(f"Map of all uber pickups at {hour_filter}:00")
 
 st.map(df_filtered)
 ```
 
-W tej chwili komponent `st.slider` pozwala na wybór tylko jednej wartości. Jeśli chcemy wykorzystać przedział godzin do wygenerowania mapy, możemy wykorzystać w tym celu komponent `st.select_slider` ([link do API](https://docs.streamlit.io/en/stable/api.html#streamlit.select_slider)).
+W tej chwili komponent `st.slider` pozwala na wybór tylko jednej wartości. Jeśli chcemy wykorzystać przedział godzin do wygenerowania mapy, możemy wykorzystać w tym celu komponent `st.select_slider` ([link do API](https://docs.streamlit.io/library/api-reference/widgets/st.select_slider)).
 
 
 ```python
 min_hour, max_hour = st.select_slider(
-    label='hours', 
+    label="hours", 
     options=range(24),
     value=(7,16)
 
 filter_idx = (data.date.dt.hour >= min_hour) & (data.date.dt.hour <= max_hour)
 df_filtered = data[filter_idx]
 
-st.subheader(f'Map of all uber pickups between {min_hour}:00 and {max_hour}:00')
+st.subheader(f"Map of all uber pickups between {min_hour}:00 and {max_hour}:00")
 
 st.map(df_filtered)
 ```
 
-Dotychczas wszystkie komponenty reagowały natychmiast na zmiany, co uniemożliwiało jednoczesne zgłoszenie wielu zmiennych. Rozwiązaniem jest wykorzystanie komponentu `st.form` ([link do API](https://docs.streamlit.io/en/latest/api.html#streamlit.form))
+Dotychczas wszystkie komponenty reagowały natychmiast na zmiany, co uniemożliwiało jednoczesne zgłoszenie wielu zmiennych. Rozwiązaniem jest wykorzystanie komponentu `st.form` ([link do API](https://docs.streamlit.io/library/api-reference/control-flow/st.form))
 
 
 ```python
-with st.form(key='my_form'):
-    name_input = st.text_input('Name:')
-    dob_input = st.date_input('Date of birth:')
-    weight_input = st.number_input('Weight (kg):')
-    height_input = st.number_input('Height (cm):')
+with st.form(key="my_form"):
+    name_input = st.text_input("Name:")
+    dob_input = st.date_input("Date of birth:")
+    weight_input = st.number_input("Weight (kg):")
+    height_input = st.number_input("Height (cm):")
     
-    submit_btn = st.form_submit_button('Compute BMI')
+    submit_btn = st.form_submit_button("Compute BMI")
     
 if submit_btn:
     bmi = weight_input / (height_input/100)**2
-    st.write(f'Hello {name_input}, your BMI={bmi:.2%f})
+    st.write(f"Hello {name_input}, your BMI={bmi:.2%f})
 ```
 
 Już wcześniej spotkaliśmy się z koniecznością wykorzystania _placeholdera_ do zapewnienia sobie miejsca na wstawienie danych do wcześniejszego miejsca w skrypcie aplikacji. Poniższy przykład pokazuje sposób obsługi takich komponentów.
 
 
 ```python
-st.text('First line')
+st.text("First line")
 
 empty_text = st.empty()
 empty_chart = st.empty()
 
-st.text('Fourth line')
+st.text("Fourth line")
 
-empty_text.text('Second line')
+empty_text.text("Second line")
 
 empty_chart.line_chart(np.random.randn(50,2))
 ```
@@ -303,13 +303,14 @@ st.balloons()
 
 # Zadanie samodzielne
 
-Załaduj z biblioteki `scikit-learn` zbioór danych o [mieszkaniach w Bostonie](https://scikit-learn.org/stable/modules/generated/sklearn.datasets.load_boston.html). Następnie przygotuj analizę, na którą będą się składać:
+Załaduj z biblioteki `scikit-learn` zbioór danych o [mieszkaniach w Kaliforni](https://scikit-learn.org/stable/modules/generated/sklearn.datasets.fetch_california_housing.html). Następnie przygotuj analizę, na którą będą się składać:
 
 - wyświetlenie zbioru danych
-- możliwość wyświetlenia tylko tych nieruchomości, które leżą nad rzeką (checkbox)
-- filtr pozwalający na wskazanie zakresu podatku
+- możliwość wyświetlenia tylko tych nieruchomości, które są młodsze niż 10 lat (checkbox)
+- filtr pozwalający na wskazanie zakresu liczby mieszkańców bloku
 - wykres pokazujący rozkład średnich wartości domów
 - prosty model regresji (np. drzewo decyzyjne) który wyznacza wartość domu na podstawie wybranego podzbioru 3 parametrów
+- mapa wizualizująca położenie nieruchomości
 - formularz przyjmujący wybrane parametry i wyświetlający predykcję wartości domu
 
 ---
@@ -338,7 +339,7 @@ import os
 import streamlit as st
 import streamlit.components.v1 as components
 
-st.title('My component example')
+st.title("My component example")
 
 _component_func = components.declare_component(
     "my_component",
@@ -377,7 +378,7 @@ interface State {
 }
 
 class MyComponent extends StreamlitComponentBase<State> {
-  public state = { counter: this.props.args['start'] }
+  public state = { counter: this.props.args["start"] }
 
   public render = (): ReactNode => {
 
