@@ -303,7 +303,7 @@ st.balloons()
 
 # Zadanie samodzielne
 
-Załaduj z biblioteki `scikit-learn` zbioór danych o [mieszkaniach w Kaliforni](). Następnie przygotuj analizę, na którą będą się składać:
+Załaduj z biblioteki `scikit-learn` zbioór danych o [mieszkaniach w Kaliforni](https://scikit-learn.org/stable/modules/generated/sklearn.datasets.fetch_california_housing.html). Następnie przygotuj analizę, na którą będą się składać:
 
 - wyświetlenie zbioru danych
 - możliwość wyświetlenia tylko tych nieruchomości, które są młodsze niż 10 lat (checkbox)
