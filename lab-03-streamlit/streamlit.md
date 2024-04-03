@@ -44,7 +44,7 @@ Jeżeli chcesz w prosty i szybki sposób dodać formatowaną zawartość, najła
 ```python
 st.markdown("> Streamlit is awsome!")
 st.markdown("*Mikołaj Morzy*")
-st.markdown("[Don"t click on me](https://theuselessweb.com/)")
+st.markdown("[Don't click on me](https://theuselessweb.com/)")
 ```
 
 Analogicznie można dołączyć do dokumentu fragment w Latexu
