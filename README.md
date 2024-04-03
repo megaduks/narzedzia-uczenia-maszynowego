@@ -32,15 +32,15 @@ Przejdź do katalogu `lab-03-streamlit`, zbuduj kontener Docker i uruchom go (in
 
 ```bash
 cd lab-03-streamlit
-docker build -t streamlit:latest .
-docker container run -it -p 8501:8501 streamlit:latest
+sudo docker build -t streamlit:latest .
+sudo docker container run -it -p 8501:8501 streamlit:latest
 ```
 
 Otwórz nowe okno konsoli i sprawdź identyfikator uruchomionego kontenera Docker. Korzystając z tego identyfikatora uruchom konsolę wewnątrz kontenera. Ze względu na ogólną trudność współdzielenia clipboardu między kontenerem i hostem, najprościej jest wykonać ćwiczenie uruchamiając w konsoli edytor `vim` i dzieląc ekran na dwie części (komenda `:split`). Przechodzenie między podzielonymi panelami w `vim` jest realizowane przez sekwencję klawiszy `ctrl-W ctrl-W`.
 
 ```bash
-docker ps
-docker exec -it <container-id> /bin/bash
+sudo docker ps
+sudo docker exec -it <container-id> /bin/bash
 vim -o streamlit.md helloworld.py 
 ```
 
