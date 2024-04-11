@@ -88,7 +88,7 @@ Dane, które już są umieszczone w obiekcie `DataFrame` mogą posłużyć do wi
 ```python
 age_distribution = df.Age.dropna().value_counts()
 
-st.chart(age_distribution)
+st.bar_chart(age_distribution)
 ```
 
 Jeśli chcesz włączyć wyświetlanie fragmentu aplikacji warunkowo, możesz to łatwo zrobić dzięki komponentowi `st.checkbox`. Zamień ostatnie dwie linie na poniższy kod:
@@ -112,7 +112,7 @@ st.dataframe(df[df.Sex == display_sex])
 
 Duża liczba kontrolek w głównym panelu wyświetlania danych może źle wpłynąć na czytelność aplikacji. Dowolny komponent może być automatycznie przeniesiony do paska bocznego poprzez zamianę wywołania `st.komponent` na `st.sidebar.komponent`. Spróbuj przenieść listę wyboru płci do wyświetlenia do paska bocznego. 
 
-Kod wyświetlany w głównym panelu nie musi zajmować całej szerokości panelu. Panel może być podzielony na dowolną liczbę kolumn przy użyciu komponentu `st.beta_columns`. 
+Kod wyświetlany w głównym panelu nie musi zajmować całej szerokości panelu. Panel może być podzielony na dowolną liczbę kolumn przy użyciu komponentu `st.columns`. 
 
 Umieść w pliku poniższy kod i zaobserwuj jego działanie.
 
@@ -196,11 +196,12 @@ data
 Funkcja `generate_data()` jest przykładem funkcji, której wyniki mogłyby być zapisane w pamięci podręcznej aby przyspieszyć wykonywanie skryptu. Streamlit wykonuje cały skrypt przy zajściu jakiejkolwiek zmiany, więc przyspieszenie wykonywania takich fragmentów skryptu ma niebagatelne znaczenie. 
 
 - zmień liczbę generowanych punktów na: 200, 1000, 10000 i zaobserwuj czas potrzebny na załadowanie strony
-- udekoruj funkcję dekoratorem `@st.cache` i porównaj czas ładowania strony
+- udekoruj funkcję dekoratorem `@st.cache_data` i porównaj czas ładowania strony
 
 W tej chwili liczba generowanych punktów danych jest ustawiona "na sztywno" na 500. Dodajmy pole tekstowe umożliwiające użytkownikowi podanie tej liczby samodzielnie. Zmodyfikuj powyższy kod tak, żeby możliwe było przekazanie do skryptu pożądanej liczby punktów. Wykorzystaj w tym celu komponent [number_input](https://docs.streamlit.io/library/api-reference/widgets/st.number_input)
 
 ```python
+@st.cache_data
 def generate_data(...):
     ...
     
