@@ -176,13 +176,17 @@ Spróbujmy dokonać niewielkich modyfikacji w definicji modelu:
 a następnie uruchom trening ponownie, tym razem jawnie wskazując miejsce zapisania modelu:
 
 ```bash
-ludwig train --dataset data/titanic/train.csv --config model-titanic.yaml --output_directory results/titanic
+ludwig train --dataset data/titanic/train.csv \
+    --config model-titanic.yaml \
+    --output_directory results/titanic
 ```
 
 W kolejnym kroku przetestujemy model korzystając z polecenia `experiment`. Zanim uruchomisz poniższe polecenie, dodaj do pliku konfiguracyjnego ograniczenie treningu do 10 epok.
 
 ```bash
-ludwig experiment --k_fold 5 --dataset data/titanic/train.csv --config model-titanic.yaml
+ludwig experiment --k_fold 5 \ 
+    --dataset data/titanic/train.csv \
+    --config model-titanic.yaml
 ```
 
 Obejrzyj wyniki eksperymentu.
@@ -190,7 +194,19 @@ Obejrzyj wyniki eksperymentu.
 W następnym kroku zwizualizujemy proces uczenia.
 
 ```bash
-ludwig visualize --visualization learning_curves --training_statistics results/titanic/experiment_run/training_statistics.json
+ludwig visualize --visualization learning_curves \
+  --training_statistics results/titanic/experiment_run/training_statistics.json \
+  --file_format pdf --output_directory results/titanic/
+```
+
+Wyniki wizualizacji zostały zapisane na dysku w kontenerze, więc musimy jeszcze przekopiować je na komputer-host w celu obejrzenia. Sprawdź identyfikator kontenera i przekopiuj pliki.
+
+```bash
+sudo docker ps
+
+sudo docker cp <container_ID> /home/results/titanic/learning_curves_Survived_accuracy.df .
+sudo docker cp <container_ID> /home/results/titanic/learning_curves_Survived_loss.df .
+sudo docker cp <container_ID> /home/results/titanic/learning_curves_combined_loss.df .
 ```
 
 ## Klasyfikacja obrazów
@@ -221,33 +237,36 @@ training:
 a następnie uruchom trening modelu:
 
 ```bash
-ludwig train --dataset image-train.csv --config model-images.yaml --output results/
+ludwig train --dataset image-train.csv \
+    --config model-images.yaml \
+    --output_directory results/images/
 ```
 
 Obejrzyj wynik procesu uczenia (wskaż właściwy dla siebie katalog ze statystykami treningu)
 
 ```bash
-ludwig visualize --visualization learning_curves --training_statistics results/<run>/training_statistics.json
+ludwig visualize --visualization learning_curves \
+    --training_statistics results/images/<run>/training_statistics.json
 ```
 
 W następnym kroku zaaplikujemy wytrenowany model do nowego zbioru danych.
 
 ```bash
-ludwig predict --dataset image-test.csv --model_path results/<run>/model/
+ludwig predict --dataset image-test.csv --model_path results/images/<run>/model/
 ```
 
 Obejrzyj wyniki zaaplikowania modelu:
 
 ```bash
-cat results/label_predictions.csv
+cat results/images/label_predictions.csv
 
-cat results/label_probabilities.csv
+cat results/images/label_probabilities.csv
 ```
 
 Korzystając z linii poleceń możemy łatwo połączyć pliki i sprawdzić, które przykłady zostały błędnie sklasyfikowane.
 
 ```bash
-paste image-test.csv results/label_predictions.csv
+paste image-test.csv results/images/label_predictions.csv
 ```
 
 ## Serwowanie modelu
@@ -261,13 +280,13 @@ pip install ludwig[serve]
 a następnie uruchomić serwer:
 
 ```bash
-ludwig serve --model_path results/experiment_run/model --port 8081 --host 0.0.0.0
+ludwig serve --model_path results/images/experiment_run/model --port 8081 --host 0.0.0.0
 ```
 
 Po uruchomieniu serwisu można wysyłać do niego żądania:
 
 ```bash
-curl http://localhost:8080/predict -X POST -F 'image_path=@data/shapes/serve/triangle.png'
+curl http://localhost:8081/predict -X POST -F 'image_path=@data/shapes/serve/triangle.png'
 ```
 
 ## Dostęp przez API
@@ -280,7 +299,6 @@ from ludwig.api import LudwigModel
 import pandas as pd
 
 df = pd.read_csv('data/tweets/tweets.csv')
-df.head()
 
 model_definition = {
     'input_features':[
@@ -288,18 +306,18 @@ model_definition = {
     ],
     'output_features': [
         {'name': 'label', 'type': 'category'}
-    ]
+    ],
+    'training':
+        {'epochs': 100, 'batch_size': 32, 'learning_rate': 0.01},
 }
 
 model = LudwigModel(model_definition, logging_level=25)
-train_stats, _, _ = model.train(dataset=df)
-
-train_stats
+model.train(dataset=df)
 
 tweets = [
     {'tweet': 'I just had my vaccine shot today!'},
     {'tweet': 'Trump claims serious voter fraud in Nevada'},
-    {'tweet': 'EU stops the administration of the Pfizer'}
+    {'tweet': 'EU stops the administration of the Pfizer vaccine'}
 ]
 
 model.predict(dataset=tweets, data_format='dict')
