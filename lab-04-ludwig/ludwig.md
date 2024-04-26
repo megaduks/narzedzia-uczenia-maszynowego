@@ -43,7 +43,8 @@ Uruchom trenowanie modelu korzystając z poniższego polecenia:
 
 ```bash
 
-ludwig train --dataset data/tweets/tweets.csv \
+ludwig train \
+    --dataset data/tweets/tweets.csv \
     --config_str '{input_features: [{name: tweet, type: text}], output_features: [{name: label, type: category}]}'
 ```
 
@@ -68,7 +69,9 @@ training:
 Uruchom trenowanie modelu korzystając z polecenia:
 
 ```bash
-ludwig train --dataset data/tweets/tweets.csv --config model-tweets.yaml
+ludwig train \
+    --dataset data/tweets/tweets.csv \
+    --config model-tweets.yaml
 ```
 
 Domyślnym dekoderem dla danych tekstowych jest `parallel_cnn` inspirowany pracą Kima [Convolutional Neural Networks for Sentence Classification](https://arxiv.org/abs/1408.5882). Załóżmy, że zamiast korzystać z konwolucji na poziomie słów, spróbujemy konwolucji na poziomie pojedynczych znaków. W sekcji `input_features` dodaj klucz `level` z wartością `char` i uruchom ponownie trening.
@@ -164,7 +167,9 @@ output_features:
 Uruchom trening modelu wykonując polecenie:
 
 ```bash
-ludwig train --dataset data/titanic/train.csv --config model-titanic.yaml
+ludwig train \
+    --dataset data/titanic/train.csv \
+    --config model-titanic.yaml
 ```
 
 Spróbujmy dokonać niewielkich modyfikacji w definicji modelu:
@@ -176,7 +181,8 @@ Spróbujmy dokonać niewielkich modyfikacji w definicji modelu:
 a następnie uruchom trening ponownie, tym razem jawnie wskazując miejsce zapisania modelu:
 
 ```bash
-ludwig train --dataset data/titanic/train.csv \
+ludwig train \
+    --dataset data/titanic/train.csv \
     --config model-titanic.yaml \
     --output_directory results/titanic
 ```
@@ -184,7 +190,8 @@ ludwig train --dataset data/titanic/train.csv \
 W kolejnym kroku przetestujemy model korzystając z polecenia `experiment`. Zanim uruchomisz poniższe polecenie, dodaj do pliku konfiguracyjnego ograniczenie treningu do 10 epok.
 
 ```bash
-ludwig experiment --k_fold 5 \ 
+ludwig experiment \
+    --k_fold 5 \ 
     --dataset data/titanic/train.csv \
     --config model-titanic.yaml
 ```
@@ -194,9 +201,11 @@ Obejrzyj wyniki eksperymentu.
 W następnym kroku zwizualizujemy proces uczenia.
 
 ```bash
-ludwig visualize --visualization learning_curves \
-  --training_statistics results/titanic/experiment_run/training_statistics.json \
-  --file_format pdf --output_directory results/titanic/
+ludwig visualize \
+    --visualization learning_curves \
+    --training_statistics results/titanic/experiment_run/training_statistics.json \
+    --file_format pdf \
+    --output_directory results/titanic/
 ```
 
 Wyniki wizualizacji zostały zapisane na dysku w kontenerze, więc musimy jeszcze przekopiować je na komputer-host w celu obejrzenia. Sprawdź identyfikator kontenera i przekopiuj pliki.
@@ -204,9 +213,9 @@ Wyniki wizualizacji zostały zapisane na dysku w kontenerze, więc musimy jeszcz
 ```bash
 sudo docker ps
 
-sudo docker cp <container_ID> /home/results/titanic/learning_curves_Survived_accuracy.df .
-sudo docker cp <container_ID> /home/results/titanic/learning_curves_Survived_loss.df .
-sudo docker cp <container_ID> /home/results/titanic/learning_curves_combined_loss.df .
+sudo docker cp <container_ID>:/home/results/titanic/learning_curves_Survived_accuracy.df .
+sudo docker cp <container_ID>:/home/results/titanic/learning_curves_Survived_loss.df .
+sudo docker cp <container_ID>:/home/results/titanic/learning_curves_combined_loss.df .
 ```
 
 ## Klasyfikacja obrazów
@@ -237,7 +246,8 @@ training:
 a następnie uruchom trening modelu:
 
 ```bash
-ludwig train --dataset image-train.csv \
+ludwig train \
+    --dataset image-train.csv \
     --config model-images.yaml \
     --output_directory results/images/
 ```
@@ -245,14 +255,18 @@ ludwig train --dataset image-train.csv \
 Obejrzyj wynik procesu uczenia (wskaż właściwy dla siebie katalog ze statystykami treningu)
 
 ```bash
-ludwig visualize --visualization learning_curves \
+ludwig visualize \
+    --visualization learning_curves \
     --training_statistics results/images/<run>/training_statistics.json
 ```
 
 W następnym kroku zaaplikujemy wytrenowany model do nowego zbioru danych.
 
 ```bash
-ludwig predict --dataset image-test.csv --model_path results/images/<run>/model/
+ludwig predict \
+    --dataset image-test.csv \
+    --model_path results/images/<run>/model/ \
+    --output_directory results/images
 ```
 
 Obejrzyj wyniki zaaplikowania modelu:
@@ -280,7 +294,10 @@ pip install ludwig[serve]
 a następnie uruchomić serwer:
 
 ```bash
-ludwig serve --model_path results/images/experiment_run/model --port 8081 --host 0.0.0.0
+ludwig serve \
+    --model_path results/images/experiment_run/model 
+    --port 8081 \
+    --host 0.0.0.0
 ```
 
 Po uruchomieniu serwisu można wysyłać do niego żądania:
