@@ -70,8 +70,8 @@ Przejdź do katalogu `lab-06-mlflow`, zbuduj kontener Docker i uruchom go (instr
 
 ```bash
 cd lab-06-mlflow
-docker build -t mlflow:latest .
-docker container run -it -p 5000:5000 mlflow:latest /bin/bash
+sudo docker build -t mlflow:latest .
+sudo docker container run -it -p 5000:5000 mlflow:latest /bin/bash
 ```
 
 ### nlpaug & checklist

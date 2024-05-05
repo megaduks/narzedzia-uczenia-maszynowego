@@ -1,4 +1,5 @@
-import plac
+import typer
+from typing_extensions import Annotated
 
 import pandas as pd
 import numpy as np
@@ -17,14 +18,14 @@ from mlflow.tracking import MlflowClient
 def autolog(run):
 
     tags = {
-        k: v 
-        for k, v in run.data.tags.items() 
+        k: v
+        for k, v in run.data.tags.items()
         if not k.startswith("mlflow.")
     }
 
     artifacts = [
-        f.path 
-        for f 
+        f.path
+        for f
         in MlflowClient().list_artifacts(run.info.run_id, "model")
     ]
 
@@ -34,11 +35,12 @@ def autolog(run):
     print(f"metrics: {run.data.metrics}")
     print(f"tags: {tags}")
 
+def main(
+        input_file: Annotated[Path, typer.Option("--input_file", "-i", help="Input file with training data")],
+        alpha: Annotated[float, typer.Option("--alpha", "-a", help="Alpha param for ElasticNet")] = 0.5,
+        l1_ratio: Annotated[float, typer.Option("--l1_ratio", "-l", help="L1 ratio param for ElasticNet")] = 0.5
+        ):
 
-@plac.opt('input_file', 'Input file with training data', Path, 'i')
-@plac.opt('alpha', 'Alpha parameter for ElasticNet', float, 'a')
-@plac.opt('l1_ratio', 'L1 ratio parameter for ElasticNet', float, 'l')
-def main(input_file: Path, alpha: float=0.5, l1_ratio: float=0.5):
 
     assert input_file, "Please provide a file with the training data"
 
@@ -80,4 +82,4 @@ def main(input_file: Path, alpha: float=0.5, l1_ratio: float=0.5):
     # autolog(mlflow.get_run(run_id=run.info.run_id))
 
 if __name__ == "__main__":
-    plac.call(main)
+    typer.run(main)
