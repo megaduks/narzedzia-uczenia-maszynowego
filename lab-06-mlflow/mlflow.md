@@ -33,7 +33,8 @@ Stwórz plik `train.py` i zamieść w nim poniższy kod:
 
 
 ```python
-import plac
+import typer
+from typing_extensions import Annotated
 
 import pandas as pd
 import numpy as np
@@ -47,10 +48,12 @@ from pathlib import Path
 import mlflow
 import mlflow.sklearn
 
-@plac.opt('input_file', 'Input file with training data', Path, 'i')
-@plac.opt('alpha', 'Alpha parameter for ElasticNet', float, 'a')
-@plac.opt('l1_ratio', 'L1 ratio parameter for ElasticNet', float, 'l')
-def main(input_file: Path, alpha: float=0.5, l1_ratio: float=0.5):
+
+def main(
+        input_file: Annotated[Path, typer.Option("--input_file", "-i", help="Input file with training data")],
+        alpha: Annotated[float, typer.Option("--alpha", "-a", help="Alpha param for ElasticNet")] = 0.5,
+        l1_ratio: Annotated[float, typer.Option("--l1_ratio", "-l", help="L1 ratio param for ElasticNet")] = 0.5
+        ):
 
     assert input_file, "Please provide a file with the training data"
 
@@ -85,7 +88,7 @@ def main(input_file: Path, alpha: float=0.5, l1_ratio: float=0.5):
 
 
 if __name__ == "__main__":
-    plac.call(main)
+    typer.run(main)
 ```
 
 Obejrzyj zawartość pliku z danymi
@@ -99,7 +102,7 @@ Sprawdź poprawność funkcjonowania skryptu uruchamiając go z linii poleceń
 ```bash
 bash$ python train.py --help
 
-bash$ python train.py --input-file data/winequality.csv --alpha 0.4 --l1-ratio 0.75
+bash$ python train.py --input_file data/winequality.csv --alpha 0.4 --l1_ratio 0.75
 ```
 
 Obejrzyj strukturę katalogu `mlruns`
